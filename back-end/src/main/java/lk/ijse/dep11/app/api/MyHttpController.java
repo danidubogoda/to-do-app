@@ -40,7 +40,7 @@ public class MyHttpController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "application/json", produces = "application/json")
     public TaskTo addTask(
-            @RequestBody @Validated TaskTo taskto){
+            @RequestBody @Validated(TaskTo.Create.class)  TaskTo taskto){
         try(Connection connection = pool.getConnection()) {
             PreparedStatement stm = connection.prepareStatement("INSERT INTO task (description, status) VALUES (?, FALSE)",
                     Statement.RETURN_GENERATED_KEYS);
@@ -64,7 +64,7 @@ public class MyHttpController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public void updateTask( @PathVariable int id,
-                            @RequestBody @Validated TaskTo taskTo){
+                            @RequestBody @Validated(TaskTo.Update.class) TaskTo taskTo){
 
         try (Connection connection = pool.getConnection()){
 
