@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/tasks")
+@CrossOrigin
 public class MyHttpController {
 
     private final HikariDataSource pool;
@@ -59,9 +60,38 @@ public class MyHttpController {
     }
 
 
-    public void updateTask(){
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{id}", consumes = "application/json")
+    public void updateTask( @PathVariable int id,
+                            @RequestBody @Validated TaskTo taskTo){
+
+        try (Connection connection = pool.getConnection()){
+
+            PreparedStatement stmExist = connection.prepareStatement("SELECT * FROM task WHERE id=?");
+            stmExist.setInt(1, id);
+            ResultSet rst = stmExist.executeQuery();
+            if(!rst.next()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task Not Found");
+            }
+
+            PreparedStatement stm = connection.prepareStatement("UPDATE task SET description=?, status=? WHERE id=?");
+            stm.setString(1, taskTo.getDescription());
+            stm.setBoolean(2, taskTo.getStatus());
+            stm.setInt(3, id);
+
+            stm.executeUpdate();
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         System.out.println("updateTask()");
     }
+
+
+
 
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
