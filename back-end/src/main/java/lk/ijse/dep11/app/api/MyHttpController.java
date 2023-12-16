@@ -10,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PreDestroy;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/tasks")
@@ -88,8 +90,32 @@ public class MyHttpController {
 
 
 
-    public void getAllTask(){
-        System.out.println("getAllTask()");
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(produces = "application/json")
+    public List<TaskTo> getAllTask(){
+
+        try (Connection connection = pool.getConnection()){
+
+            PreparedStatement stm = connection.prepareStatement("SELECT * FROM task ORDER BY id");
+            ResultSet rst = stm.executeQuery();
+
+            ArrayList<TaskTo> TaskList = new ArrayList<>();
+
+            while (rst.next()){
+                int id = rst.getInt("id");
+                String description = rst.getString("description");
+                boolean status = rst.getBoolean("status");
+
+                TaskList.add(new TaskTo(id, description, status));
+            }
+
+            return TaskList;
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
