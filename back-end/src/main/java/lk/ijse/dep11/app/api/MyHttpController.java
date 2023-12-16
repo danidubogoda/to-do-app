@@ -6,6 +6,7 @@ import lk.ijse.dep11.app.to.TaskTo;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PreDestroy;
 import java.sql.*;
@@ -61,9 +62,30 @@ public class MyHttpController {
     }
 
 
-    public void deleteTask(){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{id}")
+    public void deleteTask(@PathVariable("id") int taskId){
+
+        try(Connection connection = pool.getConnection()) {
+            PreparedStatement stmExit = connection.prepareStatement("SELECT * FROM task WHERE id = ?");
+            stmExit.setInt(1, taskId);
+            ResultSet rst = stmExit.executeQuery();
+
+            if(!rst.next()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task Not Found");
+            }
+
+            PreparedStatement stm = connection.prepareStatement("DELETE FROM task WHERE id = ?");
+            stm.setInt(1, taskId);
+            stm.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         System.out.println("deleteTask()");
     }
+
 
 
     public void getAllTask(){
