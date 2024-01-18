@@ -584,7 +584,7 @@ var _firebaseJs = require("./firebase.js");
 const txtElm = document.querySelector("#txt");
 const btnAddElm = document.querySelector("#btn-add");
 const taskContainerElm = document.querySelector("#task-container");
-const API_URL;
+const API_URL = "http://localhost:8080/api/v1";
 const googleProvider = new (0, _auth.GoogleAuthProvider)();
 const btnSignInElm = document.querySelector("#btn-sign-in");
 const btnSingOutElm = document.querySelector("#btn-sign-out");
@@ -611,7 +611,6 @@ function myFunction() {
     element.dataset.bsTheme = element.dataset.bsTheme == "light" ? "dark" : "light";
 }
 (0, _auth.onAuthStateChanged)((0, _firebaseJs.auth), (user)=>{
-    loaderElm.classList.add("d-none");
     loggedUser = user;
     console.log(loggedUser);
     if (user) {
@@ -622,6 +621,20 @@ function myFunction() {
 btnSignInElm.addEventListener("click", ()=>{
     (0, _auth.signInWithPopup)((0, _firebaseJs.auth), googleProvider);
 });
+btnSingOutElm.addEventListener("click", ()=>{
+    (0, _auth.signOut)((0, _firebaseJs.auth));
+});
+function loadAllTasks() {
+    fetch(`${API_URL}/tasks?email=${loggedUser.email}`).then((res)=>{
+        if (res.ok) res.json().then((taskList)=>{
+            taskContainerElm.querySelectorAll("li").forEach((li)=>li.remove());
+            taskList.forEach((task)=>createTask(task));
+        });
+        else alert("Failed to load task List");
+    }).catch((err)=>{
+        alert("Something went wrong, try again later");
+    });
+}
 
 },{"firebase/auth":"clfSk","./firebase.js":"5VmhM"}],"clfSk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");

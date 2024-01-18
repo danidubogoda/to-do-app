@@ -15,6 +15,13 @@
   color: red;
 }
 
+#login-overlay {
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 #mode:hover {
   cursor: pointer;
   color: orange;

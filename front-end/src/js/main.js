@@ -37,7 +37,6 @@ function myFunction(){
 }
 
 onAuthStateChanged(auth, user => {
-    loaderElm.classList.add('d-none');
     loggedUser = user;
     console.log(loggedUser);
     if (user){
@@ -51,3 +50,23 @@ onAuthStateChanged(auth, user => {
 btnSignInElm.addEventListener('click', ()=>{
     signInWithPopup(auth, googleProvider);
 });
+
+btnSingOutElm.addEventListener('click', ()=>{
+    signOut(auth);   
+});
+
+
+function loadAllTasks(){
+    fetch(`${API_URL}/tasks?email=${loggedUser.email}`).then(res => {
+        if(res.ok){
+            res.json().then(taskList => {
+                taskContainerElm.querySelectorAll("li").forEach(li => li.remove());
+                taskList.forEach(task => createTask(task));
+            });
+        }else{
+            alert("Failed to load task List");
+        }
+    }).catch(err =>{
+        alert("Something went wrong, try again later")
+    });
+}

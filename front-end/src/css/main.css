@@ -16,6 +16,14 @@
 }
 
 
+#login-overlay{
+    left: 0;
+    top: 0;
+    position: fixed;
+    background-color: white;
+    /* background-color: white; */
+}
+
 #mode:hover{
     cursor: pointer;
     color:orange;
