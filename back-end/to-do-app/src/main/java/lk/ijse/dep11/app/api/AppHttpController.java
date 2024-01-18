@@ -86,7 +86,20 @@ public class AppHttpController {
     @DeleteMapping(value = "/{id}")
     public void deleteTask(@PathVariable int id){
          System.out.println("deleteTask()");
+        try (Connection connection = pool.getConnection()) {
+            PreparedStatement stmExist = connection
+                    .prepareStatement("SELECT * FROM task WHERE id = ?");
+            stmExist.setInt(1, id);
+            if (!stmExist.executeQuery().next()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task Not Found");
+            }
 
+            PreparedStatement stm = connection.prepareStatement("DELETE FROM task WHERE id=?");
+            stm.setInt(1, id);
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
