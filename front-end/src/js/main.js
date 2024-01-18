@@ -15,7 +15,7 @@ const loaderElm = document.querySelector("#loader");
 
 const modeElm = document.querySelector('#mode');
 modeElm.addEventListener('click', (e) => {
-    myFunction();
+    changeMode();
    
     if(e.target?.classList.contains('bi-brightness-high-fill')){
         e.target.classList.remove('bi-brightness-high-fill');
@@ -30,13 +30,14 @@ modeElm.addEventListener('click', (e) => {
     }
 });
 
-function myFunction(){
+function changeMode(){
     var element = document.body;
     element.dataset.bsTheme = 
         element.dataset.bsTheme == "light" ? "dark" : "light";
 }
 
 onAuthStateChanged(auth, user => {
+    loaderElm.classList.add('d-none');
     loggedUser = user;
     console.log(loggedUser);
     if (user){

@@ -593,7 +593,7 @@ let loggedUser = null;
 const loaderElm = document.querySelector("#loader");
 const modeElm = document.querySelector("#mode");
 modeElm.addEventListener("click", (e)=>{
-    myFunction();
+    changeMode();
     if (e.target?.classList.contains("bi-brightness-high-fill")) {
         e.target.classList.remove("bi-brightness-high-fill");
         e.target.classList.add("bi-moon-stars-fill");
@@ -606,11 +606,12 @@ modeElm.addEventListener("click", (e)=>{
         e.target.classList.add("fs-3");
     }
 });
-function myFunction() {
+function changeMode() {
     var element = document.body;
     element.dataset.bsTheme = element.dataset.bsTheme == "light" ? "dark" : "light";
 }
 (0, _auth.onAuthStateChanged)((0, _firebaseJs.auth), (user)=>{
+    loaderElm.classList.add("d-none");
     loggedUser = user;
     console.log(loggedUser);
     if (user) {
