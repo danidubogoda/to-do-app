@@ -38,7 +38,8 @@ public class AppHttpController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     public TaskTO createTask(
             @RequestBody @Validated(TaskTO.Create.class) TaskTO taskTO){
-         System.out.println("createTask()");
+
+        // System.out.println("createTask()");
 
         try (Connection connection = pool.getConnection()) {
 
@@ -63,7 +64,7 @@ public class AppHttpController {
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public void updateTask(@PathVariable int id,
                            @RequestBody @Validated(TaskTO.Update.class)  TaskTO taskTO){
-         System.out.println("updateTask()");
+         //System.out.println("updateTask()");
         try (Connection connection = pool.getConnection()) {
             PreparedStatement stmExist = connection
                     .prepareStatement("SELECT * FROM task WHERE id = ?");
@@ -87,7 +88,7 @@ public class AppHttpController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id}")
     public void deleteTask(@PathVariable int id){
-         System.out.println("deleteTask()");
+        // System.out.println("deleteTask()");
         try (Connection connection = pool.getConnection()) {
             PreparedStatement stmExist = connection
                     .prepareStatement("SELECT * FROM task WHERE id = ?");
@@ -108,7 +109,7 @@ public class AppHttpController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = "application/json", params = {"email"})
     public List<TaskTO> getAllTasks(String email){
-         System.out.println("getAllTask()");
+        // System.out.println("getAllTask()");
 
         try (Connection connection = pool.getConnection()) {
             PreparedStatement stm = connection.prepareStatement("SELECT * FROM task WHERE email =? ORDER BY id");
