@@ -70,3 +70,48 @@ function loadAllTasks(){
         alert("Something went wrong, try again later")
     });
 }
+
+function createTask(task){
+    const liElm = document.createElement('li');
+    taskContainerElm.append(liElm);
+    liElm.id = "task-" + task.id;
+    liElm.className = 'd-flex justify-content-between p-1 px-5 align-items-center';
+
+    liElm.innerHTML = `
+        <div class="flex-grow-1 d-flex gap-2 align-items-center">
+            <input class="form-check-input m-0" id="chk-task-${task.id}" type="checkbox" ${task.status ? "checked": ""}>
+            <label class="flex-grow-1" for="chk-task-${task.id}">${task.description}</label>
+        </div>
+        <i class="delete bi bi-trash fs-4"></i>    
+    `;
+}
+
+btnAddElm.addEventListener('click', ()=>{
+    const taskDescription = txtElm.value;
+    
+    if (!taskDescription.trim()){
+        txtElm.focus();
+        txtElm.select();
+        return;
+    }
+
+    fetch(`${API_URL}/tasks`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({description: txtElm.value, email: loggedUser.email})
+    }).then(res => {
+        if (res.ok){
+            res.json().then(task => {
+                createTask(task);
+                txtElm.value = "";
+                txtElm.focus();
+            });
+        }else{
+            alert("Failed to add the task");
+        }
+    }).catch(err => {
+        alert("Something went wrong, try again later");
+    });
+});
